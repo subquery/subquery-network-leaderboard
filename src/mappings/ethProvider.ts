@@ -153,7 +153,7 @@ export default class FrontierEthProvider extends Provider {
     return (r as Bytes).toHex();
   }
 
-  /*async*/ getBlockWithTransactions(
+  getBlockWithTransactions(
     blockHashOrBlockTag: BlockTag | Promise<BlockTag>
   ): Promise<BlockWithTransactions> {
     throw new Error('Not implemented');
