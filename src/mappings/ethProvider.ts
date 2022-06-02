@@ -83,9 +83,6 @@ function ethLogToLog(log: EthLog): Log {
   };
 }
 
-// const substrate = 'wss://node-6870830370282213376.rz.onfinality.io/ws?apikey=0f273197-e4d5-45e2-b23e-03b015cb7000';
-// const provider = EvmRpcProvider.from(substrate);
-
 export default class FrontierEthProvider extends Provider {
   private eth = api.rpc.eth;
 
@@ -138,7 +135,7 @@ export default class FrontierEthProvider extends Provider {
 
     const tx = await resolveProperties(transaction);
 
-    // TODO: once the acala support from safe mode, we don't need these rules to be disabled any more 
+    // TODO: once the acala support from safe mode, we don't need these rules to be disabled any more
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const r = await api.rpc.evm.call({
@@ -157,19 +154,6 @@ export default class FrontierEthProvider extends Provider {
     blockHashOrBlockTag: BlockTag | Promise<BlockTag>
   ): Promise<BlockWithTransactions> {
     throw new Error('Not implemented');
-    // const raw = await this.eth.getBlockByHash(
-    //   blockHashOrBlockTag.toString(),
-    //   true
-    // );
-
-    // const b = raw.unwrap();
-
-    // return {
-    //   ...ethRichBlockToBlock(b),
-    //   transactions: b.transactions
-    //     .toArray()
-    //     .map(ethTransactionToTransactionResponse),
-    // };
   }
 
   getBlock(blockHashOrBlockTag: BlockTag | Promise<BlockTag>): Promise<Block> {
