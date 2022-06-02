@@ -1,6 +1,10 @@
 // Copyright 2020-2022 SubQuery Pte Ltd authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Block,
   BlockTag,
@@ -22,6 +26,8 @@ import {
   EthRichBlock,
   EthTransaction,
 } from '@polkadot/types/interfaces';
+import { Bytes } from '@polkadot/api/node_modules/@polkadot/types';
+import RpcInterface from '@polkadot/rpc-core/types/jsonrpc';
 
 function ethTransactionToTransactionResponse(
   tx: EthTransaction
@@ -129,7 +135,10 @@ export default class FrontierEthProvider extends Provider {
 
     const tx = await resolveProperties(transaction);
 
-    const r = await this.eth.call({
+    // TODO: once the acala support from safe mode, we don't need these rules to be disabled any more
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const r = await api.rpc.evm.call({
       ...tx,
       nonce: tx.nonce && BNishToHex(tx.nonce),
       gas: tx.gasLimit && BNishToHex(tx.gasLimit),
@@ -137,25 +146,14 @@ export default class FrontierEthProvider extends Provider {
       value: tx.value && BNishToHex(tx.value),
       data: tx.data,
     });
-    return r.toHex();
+
+    return (r as Bytes).toHex();
   }
 
-  async getBlockWithTransactions(
+  getBlockWithTransactions(
     blockHashOrBlockTag: BlockTag | Promise<BlockTag>
   ): Promise<BlockWithTransactions> {
-    const raw = await this.eth.getBlockByHash(
-      blockHashOrBlockTag.toString(),
-      true
-    );
-
-    const b = raw.unwrap();
-
-    return {
-      ...ethRichBlockToBlock(b),
-      transactions: b.transactions
-        .toArray()
-        .map(ethTransactionToTransactionResponse),
-    };
+    throw new Error('Not implemented');
   }
 
   getBlock(blockHashOrBlockTag: BlockTag | Promise<BlockTag>): Promise<Block> {

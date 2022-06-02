@@ -26,14 +26,14 @@ import {
   DEMO_PROJECTS,
   updateIndexerChallenges,
 } from './utils';
-import { FrontierEvmEvent } from '@subql/contract-processors/dist/frontierEvm';
+import { AcalaEvmEvent } from '@subql/acala-evm-processor';
 
 function getDeploymentIndexerId(indexer: string, deploymentId: string): string {
   return `${indexer}:${deploymentId}`;
 }
 
 export async function handleNewQuery(
-  event: FrontierEvmEvent<CreateQueryEvent['args']>
+  event: AcalaEvmEvent<CreateQueryEvent['args']>
 ): Promise<void> {
   logger.info('handleNewQuery');
   assert(event.args, 'No event args');
@@ -65,7 +65,7 @@ export async function handleNewQuery(
 }
 
 export async function handleUpdateQueryMetadata(
-  event: FrontierEvmEvent<UpdateQueryMetadataEvent['args']>
+  event: AcalaEvmEvent<UpdateQueryMetadataEvent['args']>
 ): Promise<void> {
   logger.info('handleUpdateQueryMetadata');
   assert(event.args, 'No event args');
@@ -81,7 +81,7 @@ export async function handleUpdateQueryMetadata(
 }
 
 export async function handleUpdateQueryDeployment(
-  event: FrontierEvmEvent<UpdateQueryDeploymentEvent['args']>
+  event: AcalaEvmEvent<UpdateQueryDeploymentEvent['args']>
 ): Promise<void> {
   logger.info('handleUpdateQueryDeployment');
   assert(event.args, 'No event args');
@@ -110,7 +110,7 @@ export async function handleUpdateQueryDeployment(
 }
 
 export async function handleStartIndexing(
-  event: FrontierEvmEvent<StartIndexingEvent['args']>
+  event: AcalaEvmEvent<StartIndexingEvent['args']>
 ): Promise<void> {
   logger.info('handleStartIndexing');
   assert(event.args, 'No event args');
@@ -126,7 +126,7 @@ export async function handleStartIndexing(
 }
 
 export async function handleIndexingUpdate(
-  event: FrontierEvmEvent<UpdateDeploymentStatusEvent['args']>
+  event: AcalaEvmEvent<UpdateDeploymentStatusEvent['args']>
 ): Promise<void> {
   // logger.info('handleIndexingUpdate');
   assert(event.args, 'No event args');
@@ -142,7 +142,7 @@ export async function handleIndexingUpdate(
 }
 
 export async function handleIndexingReady(
-  event: FrontierEvmEvent<UpdateIndexingStatusToReadyEvent['args']>
+  event: AcalaEvmEvent<UpdateIndexingStatusToReadyEvent['args']>
 ): Promise<void> {
   logger.info('handleIndexingReady');
   assert(event.args, 'No event args');
@@ -167,7 +167,7 @@ export async function handleIndexingReady(
     await updateIndexerChallenges(
       indexer.id,
       'INDEX_SINGLE',
-      event.blockNumber
+      event.blockTimestamp
     );
   }
 
@@ -175,12 +175,16 @@ export async function handleIndexingReady(
     indexer.demoProjectsIndexed.length === DEMO_PROJECTS.length &&
     indexer.demoProjectsIndexed.every((el) => DEMO_PROJECTS.includes(el))
   ) {
-    await updateIndexerChallenges(indexer.id, 'INDEX_ALL', event.blockNumber);
+    await updateIndexerChallenges(
+      indexer.id,
+      'INDEX_ALL',
+      event.blockTimestamp
+    );
   }
 }
 
 export async function handleStopIndexing(
-  event: FrontierEvmEvent<StopIndexingEvent['args']>
+  event: AcalaEvmEvent<StopIndexingEvent['args']>
 ): Promise<void> {
   logger.info('handleStopIndexing');
   assert(event.args, 'No event args');
