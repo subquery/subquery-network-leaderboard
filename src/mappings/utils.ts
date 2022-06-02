@@ -242,13 +242,8 @@ export async function updateTotalDelegation(
 export async function updateIndexerChallenges(
   indexerAddress: string,
   challengeType: string,
-  blockHeight: number
+  blockTimestamp: Date
 ): Promise<void> {
-  if (blockHeight >= SEASON_2_END) {
-    logger.info('season 2 has ended');
-    return;
-  }
-
   const indexerRecord = await Indexer.get(indexerAddress);
 
   if (!indexerRecord) {
@@ -267,6 +262,7 @@ export async function updateIndexerChallenges(
       title: challengeType,
       points: INDEXER_CHALLENGE_PTS[challengeType],
       details: INDEXER_CHALLENGE_DETAILS[challengeType],
+      timestamp: blockTimestamp,
     });
 
     indexerRecord.singleChallengePts +=
@@ -282,17 +278,11 @@ export async function updateIndexerChallenges(
   await indexerRecord.save();
 }
 
-//FIXME: turn these into one function
 export async function updateDelegatorChallenges(
   delegatorAddress: string,
   challengeType: string,
-  blockHeight: number
+  blockTimestamp: Date
 ): Promise<void> {
-  if (blockHeight >= SEASON_2_END) {
-    logger.info('season 2 has ended');
-    return;
-  }
-
   const delegatorRecord = await Delegator.get(delegatorAddress);
 
   logger.info(
@@ -317,6 +307,7 @@ export async function updateDelegatorChallenges(
       title: challengeType,
       points: DELEGATOR_CHALLENGE_PTS[challengeType],
       details: DELEGATOR_CHALLENGE_DETAILS[challengeType],
+      timestamp: blockTimestamp,
     });
 
     delegatorRecord.singleChallengePts +=

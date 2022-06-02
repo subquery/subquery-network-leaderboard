@@ -21,7 +21,7 @@ import {
   updateDelegatorChallenges,
   updateIndexerChallenges,
 } from './utils';
-import { FrontierEvmEvent } from '@subql/contract-processors/dist/frontierEvm';
+import { AcalaEvmEvent } from '@subql/acala-evm-processor';
 import { BigNumber } from '@ethersproject/bignumber';
 
 function buildRewardId(indexer: string, delegator: string): string {
@@ -37,7 +37,7 @@ function getPrevIndexerRewardId(indexer: string, eraIdx: BigNumber): string {
 }
 
 export async function handleRewardsDistributed(
-  event: FrontierEvmEvent<DistributeRewardsEvent['args']>
+  event: AcalaEvmEvent<DistributeRewardsEvent['args']>
 ): Promise<void> {
   logger.info('handleRewardsDistributed');
   assert(event.args, 'No event args');
@@ -78,7 +78,7 @@ export async function handleRewardsDistributed(
 }
 
 export async function handleRewardsClaimed(
-  event: FrontierEvmEvent<ClaimRewardsEvent['args']>
+  event: AcalaEvmEvent<ClaimRewardsEvent['args']>
 ): Promise<void> {
   logger.info('handleRewardsClaimed');
   assert(event.args, 'No event args');
@@ -109,17 +109,17 @@ export async function handleRewardsClaimed(
   await updateIndexerChallenges(
     event.args.indexer,
     'CLAIM_REWARD',
-    event.blockNumber
+    event.blockTimestamp
   );
   await updateDelegatorChallenges(
     event.args.delegator,
     'CLAIM_REWARD',
-    event.blockNumber
+    event.blockTimestamp
   );
 }
 
 export async function handleRewardsUpdated(
-  event: FrontierEvmEvent<RewardsChangedEvent['args']>
+  event: AcalaEvmEvent<RewardsChangedEvent['args']>
 ): Promise<void> {
   logger.info('handleRewardsUpdated');
   assert(event.args, 'No event args');

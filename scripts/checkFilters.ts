@@ -1,6 +1,6 @@
-/*
- * Checks that substrate/FrontierEvmEvent topics
- */
+// Copyright 2020-2022 SubQuery Pte Ltd authors & contributors
+// SPDX-License-Identifier: Apache-2.0
+
 
 import fs from 'fs';
 import path from 'path';
@@ -59,7 +59,7 @@ function checkFilters() {
 
   project.dataSources.forEach((ds) => {
     ds.mapping.handlers
-      .filter((handler) => handler.kind === 'substrate/FrontierEvmEvent')
+      .filter((handler) => handler.kind === 'substrate/AcalaEvmEvent')
       .forEach((handler) => {
         // Check event filters
         const topics: string[] | undefined = handler?.filter?.topics;
