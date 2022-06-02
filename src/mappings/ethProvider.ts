@@ -138,6 +138,7 @@ export default class FrontierEthProvider extends Provider {
 
     const tx = await resolveProperties(transaction);
 
+    // TODO: once the acala support from safe mode, we don't need these rules to be disabled any more 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const r = await api.rpc.evm.call({
