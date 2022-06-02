@@ -16,7 +16,6 @@ export async function handleNewEra(
 
   const { era: id } = event.args;
 
-  // FIXME: set back to 1
   if (id.gt(2)) {
     const previousId = id.sub(1);
     const previousEra = await Era.get(previousId.toHexString());
