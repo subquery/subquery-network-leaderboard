@@ -28,6 +28,8 @@ export const INDEXER_CHALLENGE_PTS: Challenge_Pts = {
   WITHDRAW_CLAIMED: 50,
   INDEXER_UNDELEGATED: 20,
   UNREGISTER_INDEXER: 30,
+  PLAN_BY_TEMPLATE: 30,
+  OFFER_ACCEPTED: 50,
 };
 
 export const INDEXER_CHALLENGE_DETAILS: Challenge_Details = {
@@ -39,9 +41,11 @@ export const INDEXER_CHALLENGE_DETAILS: Challenge_Details = {
   OVERRIDE_PLAN: 'Create a override plan',
   SERVICE_AGREEMENT: 'Get a service agreement from consumer',
   CLAIM_REWARD: 'Indexer claims a reward',
-  WITHDRAW_CLAIMED: 'Delegator withdraws unstaked amount from indexer',
+  WITHDRAW_CLAIMED: 'Delegator withdraws unstaked amount from Indexer',
   INDEXER_UNDELEGATED: 'Indexer gets delegation removed',
   UNREGISTER_INDEXER: 'Unregister your indexer',
+  PLAN_BY_TEMPLATE: 'Create a plan using a plan template',
+  OFFER_ACCEPTED: 'An service aggreement is accepted by Indexer',
 };
 
 export const DELEGATOR_CHALLENGE_PTS: Challenge_Pts = {
@@ -54,6 +58,14 @@ export const DELEGATOR_CHALLENGE_DETAILS: Challenge_Details = {
   CLAIM_REWARD: 'Indexer claims a reward',
   WITHDRAW_CLAIMED: 'Delegator withdraws unstaked amount from indexer',
   UNDELEGATE_INDEXER: 'Delegator removed delegation to indexer',
+};
+
+export const CONSUMER_CHALLENGE_PTS: Challenge_Pts = {
+  CREATE_PURCHASE_OFFER: 50,
+};
+
+export const CONSUMER_CHALLENGE_DETAILS: Challenge_Details = {
+  CREATE_PURCHASE_OFFER: 'A purchase offer is created by Consumer',
 };
 
 export const DEMO_PROJECTS = [
@@ -279,6 +291,45 @@ export async function updateIndexerChallenges(
 }
 
 export async function updateDelegatorChallenges(
+  delegatorAddress: string,
+  challengeType: string,
+  blockTimestamp: Date
+): Promise<void> {
+  const delegatorRecord = await Delegator.get(delegatorAddress);
+
+  logger.info(
+    `updateDelegatorChallenges: ${delegatorAddress}, ${challengeType}, ${
+      delegatorRecord ? 'true' : 'false'
+    } `
+  );
+
+  if (!delegatorRecord) {
+    logger.warn(
+      `cannot find delegator to add challenge: ${delegatorAddress}, ${challengeType}`
+    );
+    return;
+  }
+
+  const result = delegatorRecord.singleChallenges.findIndex(
+    ({ title }) => title === challengeType
+  );
+
+  if (result === -1) {
+    const length = delegatorRecord.singleChallenges.push({
+      title: challengeType,
+      points: DELEGATOR_CHALLENGE_PTS[challengeType],
+      details: DELEGATOR_CHALLENGE_DETAILS[challengeType],
+      timestamp: blockTimestamp,
+    });
+
+    delegatorRecord.singleChallengePts +=
+      delegatorRecord.singleChallenges[length - 1].points;
+  }
+
+  await delegatorRecord.save();
+}
+
+export async function updateConsumerChallenges(
   delegatorAddress: string,
   challengeType: string,
   blockTimestamp: Date

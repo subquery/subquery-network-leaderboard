@@ -119,6 +119,16 @@ export async function handlePlanCreated(
   }
 
   await plan.save();
+
+  const template = await PlanTemplate.get(plan.planTemplateId);
+
+  if (template) {
+    await updateIndexerChallenges(
+      event.args.creator,
+      'PLAN_BY_TEMPLATE',
+      event.blockTimestamp
+    );
+  }
 }
 
 export async function handlePlanRemoved(
