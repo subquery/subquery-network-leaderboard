@@ -78,11 +78,18 @@ type Indexer @entity {
 }
 
 type Delegator @entity {
-  id: ID! # Address
+  id: ID! # Indexers address
 
   totalDelegations: EraValue!
   delegations: [Delegation] @derivedFrom(field: "delegator")
   
+  singleChallengePts: Int!
+  singleChallenges: [SingleChallengesRecord]! # Record of single challenges acheived
+}
+
+type Consumer @entity {
+  id: ID! # Indexers address
+
   singleChallengePts: Int!
   singleChallenges: [SingleChallengesRecord]! # Record of single challenges acheived
 }
