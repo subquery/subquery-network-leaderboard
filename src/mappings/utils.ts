@@ -45,7 +45,7 @@ export const INDEXER_CHALLENGE_DETAILS: Challenge_Details = {
   INDEXER_UNDELEGATED: 'Indexer gets delegation removed',
   UNREGISTER_INDEXER: 'Unregister your indexer',
   PLAN_BY_TEMPLATE: 'Create a plan using a plan template',
-  OFFER_ACCEPTED: 'An service aggreement is accepted by Indexer',
+  OFFER_ACCEPTED: 'A purchase offer is accepted by Indexer',
 };
 
 export const DELEGATOR_CHALLENGE_PTS: Challenge_Pts = {
