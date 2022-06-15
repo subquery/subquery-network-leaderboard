@@ -25,8 +25,6 @@ x-frontier: &frontier
   processor: &frontier-processor
     file: './dist/acalaEvm.js'
   assets:
-    eraManager:
-      file: ./node_modules/@subql/contract-sdk/artifacts/contracts/EraManager.sol/EraManager.json
     staking:
       file: ./node_modules/@subql/contract-sdk/artifacts/contracts/Staking.sol/Staking.json
     indexerRegistry:
@@ -43,20 +41,6 @@ x-frontier: &frontier
       file: ./node_modules/@subql/contract-sdk/artifacts/contracts/PurchaseOfferMarket.sol/PurchaseOfferMarket.json
 
 dataSources:
-  - <<: *frontier
-    processor:
-      <<: *frontier-processor
-      options:
-        abi: eraManager
-        address: '0x63edE3b9164112f50fbCD68EbFC47FD2c4E60c2E'
-    mapping:
-      file: ./dist/index.js
-      handlers:
-        - handler: handleNewEra
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - NewEraStart(uint256 indexed era, address caller)
   - <<: *frontier
     processor:
       <<: *frontier-processor
