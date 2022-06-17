@@ -4,23 +4,9 @@ enum Status {
   TERMINATED
 }
 
-type Project @entity {
-  id: ID!
-
-  owner: String!
-  metadata: String! # IPFS hash
-  currentDeployment: String! # IPFS hash
-  currentVersion: String! # IPFS hash
-  updatedTimestamp: Date!
-  createdTimestamp: Date!
-
-  deployments: [Deployment] @derivedFrom(field: "project")
-}
-
 type Deployment @entity {
   id: ID! # deploymentId, IPFS hash to deployment
   version: String! # IPFS hash to version info
-  project: Project!
   indexers: [DeploymentIndexer]! @derivedFrom(field: "deployment")
   createdTimestamp: Date!
 
@@ -36,13 +22,6 @@ type DeploymentIndexer @entity {
   mmrRoot: String
   timestamp: Date
   status: Status!
-}
-
-type Era @entity {
-  id: ID! # Era id
-  startTime: Date! # Block timestamp the Era is started
-  endTime: Date # Block timestamp that the successive Era is started
-  forceNext: Boolean # True when force save previous Era
 }
 
 # Necessary without https://github.com/subquery/subql/issues/442
@@ -67,7 +46,6 @@ type Indexer @entity {
   totalStake: EraValue!
 
   delegations: [Delegation] @derivedFrom(field: "indexer")
-  rewards: [IndexerReward] @derivedFrom(field: "indexer")
 
   lastRewardedEra: String # hex encoding
 
@@ -163,20 +141,6 @@ type Reward @entity {
 
   amount: BigInt!
   claimedTime: Date!
-}
-
-# Expected total reward an indexer will get each epoch
-type IndexerReward @entity {
-  id: ID! # indexer + era
-
-  indexer: Indexer!
-
-  # era: Era
-  eraIdx: String!
-
-  amount: BigInt!
-  additions: BigInt!
-  removals: BigInt!
 }
 
 type SingleChallengesRecord @jsonField {
