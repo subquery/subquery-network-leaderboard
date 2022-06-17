@@ -39,8 +39,6 @@ type EraValue @jsonField {
 type Indexer @entity {
   id: ID! # Indexers address
   metadata: String # Ipfs hash to metadata
-  controller: String # Controller address for the indexer
-  # rewardPool: String! # Address for the reward pool contract
 
   commission: EraValue!
   totalStake: EraValue!

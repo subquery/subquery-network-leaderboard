@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import assert from 'assert';
-import { Delegation, Indexer, Reward, UnclaimedReward } from '../types';
+import { Delegation, Reward, UnclaimedReward } from '../types';
 import { RewardsDistributer__factory } from '@subql/contract-sdk';
 import FrontierEthProvider from './ethProvider';
 import {

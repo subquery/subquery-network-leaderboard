@@ -60,16 +60,6 @@ dataSources:
           filter:
             topics:
               - UpdateMetadata(address indexed indexer, bytes32 metadata)
-        - handler: handleSetControllerAccount
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - SetControllerAccount(address indexed indexer, address indexed controller)
-        - handler: handleRemoveControllerAccount
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - RemoveControllerAccount(address indexed indexer, address indexed controller)
         - handler: handleUnregisterIndexer
           kind: substrate/AcalaEvmEvent
           filter:

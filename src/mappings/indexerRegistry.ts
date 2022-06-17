@@ -5,8 +5,6 @@ import { AcalaEvmEvent } from '@subql/acala-evm-processor';
 import { EraManager__factory } from '@subql/contract-sdk';
 import {
   RegisterIndexerEvent,
-  RemoveControllerAccountEvent,
-  SetControllerAccountEvent,
   UnregisterIndexerEvent,
   UpdateMetadataEvent,
 } from '@subql/contract-sdk/typechain/IndexerRegistry';
@@ -95,35 +93,5 @@ export async function handleUpdateIndexerMetadata(
   assert(indexer, `Expected indexer (${address}) to exist`);
 
   indexer.metadata = bytesToIpfsCid(event.args.metadata);
-  await indexer.save();
-}
-
-export async function handleSetControllerAccount(
-  event: AcalaEvmEvent<SetControllerAccountEvent['args']>
-): Promise<void> {
-  logger.info('handleSetControllerAccount');
-  assert(event.args, 'No event args');
-  const address = event.args.indexer;
-
-  const indexer = await Indexer.get(address);
-  assert(indexer, `Expected indexer (${address}) to exist`);
-
-  indexer.controller = event.args.controller;
-
-  await indexer.save();
-}
-
-export async function handleRemoveControllerAccount(
-  event: AcalaEvmEvent<RemoveControllerAccountEvent['args']>
-): Promise<void> {
-  logger.info('handleRemoveControllerAccount');
-  assert(event.args, 'No event args');
-  const address = event.args.indexer;
-
-  const indexer = await Indexer.get(address);
-  assert(indexer, `Expected indexer (${address}) to exist`);
-
-  delete indexer.controller;
-
   await indexer.save();
 }
