@@ -167,21 +167,11 @@ dataSources:
           filter:
             topics:
               - PlanTemplateMetadataChanged(uint256 indexed planTemplateId, bytes32 metadata)
-        - handler: handlePlanTemplateStatusUpdated
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - PlanTemplateStatusChanged(uint256 indexed planTemplateId, bool active)
         - handler: handlePlanCreated
           kind: substrate/AcalaEvmEvent
           filter:
             topics:
               - PlanCreated(address indexed creator, bytes32 indexed deploymentId, uint256 planTemplateId, uint256 planId, uint256 price)
-        - handler: handlePlanRemoved
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - PlanRemoved(address indexed source, uint256 id, bytes32 deploymentId)
   - <<: *frontier
     processor:
       <<: *frontier-processor

@@ -98,7 +98,6 @@ type PlanTemplate @entity {
   dailyReqCap: BigInt!
   rateLimit: BigInt!
   metadata: String
-  active: Boolean!
 }
 
 type Plan @entity {
@@ -106,8 +105,6 @@ type Plan @entity {
   price: BigInt!
   creator: String! # Address
   planTemplate: PlanTemplate!
-  active: Boolean!
-
   deployment: Deployment
 }
 

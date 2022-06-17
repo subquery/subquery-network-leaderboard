@@ -4,10 +4,8 @@
 import { PlanManager__factory } from '@subql/contract-sdk';
 import {
   PlanCreatedEvent,
-  PlanRemovedEvent,
   PlanTemplateCreatedEvent,
   PlanTemplateMetadataChangedEvent,
-  PlanTemplateStatusChangedEvent,
 } from '@subql/contract-sdk/typechain/PlanManager';
 import {
   bytesToIpfsCid,
@@ -71,21 +69,6 @@ export async function handlePlanTemplateMetadataUpdated(
   await planTemplate.save();
 }
 
-export async function handlePlanTemplateStatusUpdated(
-  event: AcalaEvmEvent<PlanTemplateStatusChangedEvent['args']>
-): Promise<void> {
-  logger.info('handlePlanTemplateStatusUpdated');
-  assert(event.args, 'No event args');
-
-  const id = event.args.planTemplateId.toHexString();
-  const planTemplate = await PlanTemplate.get(id);
-  assert(planTemplate, `Plan template not found. templateId="${id}"`);
-
-  planTemplate.active = event.args.active;
-
-  await planTemplate.save();
-}
-
 export async function handlePlanCreated(
   event: AcalaEvmEvent<PlanCreatedEvent['args']>
 ): Promise<void> {
@@ -97,7 +80,6 @@ export async function handlePlanCreated(
     planTemplateId: event.args.planTemplateId.toHexString(),
     creator: event.args.creator,
     price: event.args.price.toBigInt(),
-    active: true,
     deploymentId:
       constants.HashZero === event.args.deploymentId
         ? undefined
@@ -129,20 +111,4 @@ export async function handlePlanCreated(
       event.blockTimestamp
     );
   }
-}
-
-export async function handlePlanRemoved(
-  event: AcalaEvmEvent<PlanRemovedEvent['args']>
-): Promise<void> {
-  logger.info('handlePlanRemoved');
-  assert(event.args, 'No event args');
-
-  const planId = getPlanId(event.args.source, event.args.id);
-
-  const plan = await Plan.get(planId);
-  assert(plan, `Plan not found. planId="${planId}"`);
-
-  plan.active = false;
-
-  await plan.save();
 }
