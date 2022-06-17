@@ -123,11 +123,6 @@ dataSources:
           filter:
             topics:
               - CreateQuery(uint256 queryId, address creator, bytes32 metadata, bytes32 deploymentId, bytes32 version)
-        - handler: handleUpdateQueryMetadata
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - UpdateQueryMetadata(address owner, uint256 queryId, bytes32 metadata)
         - handler: handleUpdateQueryDeployment
           kind: substrate/AcalaEvmEvent
           filter:
@@ -220,11 +215,6 @@ dataSources:
           filter:
             topics:
               - ClaimRewards(address indexed indexer, address indexed delegator, uint256 rewards)
-        - handler: handleRewardsUpdated
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - RewardsChanged(address indexed indexer, uint256 indexed eraIdx, uint256 additions, uint256 removals)
   - <<: *frontier
     processor:
       <<: *frontier-processor
