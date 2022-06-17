@@ -48,7 +48,6 @@ export async function handlePlanTemplateCreated(
       constants.HashZero === rawPlanTemplate.metadata
         ? undefined
         : bytesToIpfsCid(rawPlanTemplate.metadata),
-    active: true,
   });
 
   await planTemplate.save();
