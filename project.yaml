@@ -50,16 +50,6 @@ dataSources:
     mapping:
       file: ./dist/index.js
       handlers:
-        - handler: handleRegisterIndexer
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - RegisterIndexer(address indexed indexer, uint256 amount, bytes32 metadata)
-        - handler: handleUpdateIndexerMetadata
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - UpdateMetadata(address indexed indexer, bytes32 metadata)
         - handler: handleUnregisterIndexer
           kind: substrate/AcalaEvmEvent
           filter:
@@ -108,36 +98,11 @@ dataSources:
     mapping:
       file: ./dist/index.js
       handlers:
-        - handler: handleNewQuery
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - CreateQuery(uint256 queryId, address creator, bytes32 metadata, bytes32 deploymentId, bytes32 version)
-        - handler: handleUpdateQueryDeployment
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - UpdateQueryDeployment(address owner, uint256 queryId, bytes32 deploymentId, bytes32 version)
-        - handler: handleStartIndexing
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - StartIndexing(address indexer, bytes32 deploymentId)
-        - handler: handleIndexingUpdate
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - UpdateDeploymentStatus(address indexer, bytes32 deploymentId, uint256 blockheight, bytes32 mmrRoot, uint256 timestamp)
         - handler: handleIndexingReady
           kind: substrate/AcalaEvmEvent
           filter:
             topics:
               - UpdateIndexingStatusToReady(address indexer, bytes32 deploymentId)
-        - handler: handleStopIndexing
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - StopIndexing(address indexer, bytes32 deploymentId)
   - <<: *frontier
     processor:
       <<: *frontier-processor
@@ -147,16 +112,6 @@ dataSources:
     mapping:
       file: ./dist/index.js
       handlers:
-        - handler: handlePlanTemplateCreated
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - PlanTemplateCreated(uint256 indexed planTemplateId)
-        - handler: handlePlanTemplateMetadataUpdated
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - PlanTemplateMetadataChanged(uint256 indexed planTemplateId, bytes32 metadata)
         - handler: handlePlanCreated
           kind: substrate/AcalaEvmEvent
           filter:
@@ -185,11 +140,6 @@ dataSources:
     mapping:
       file: ./dist/index.js
       handlers:
-        - handler: handleRewardsDistributed
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - DistributeRewards(address indexed indexer, uint256 indexed eraIdx)
         - handler: handleRewardsClaimed
           kind: substrate/AcalaEvmEvent
           filter:
