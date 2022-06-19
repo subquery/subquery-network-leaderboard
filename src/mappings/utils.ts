@@ -20,12 +20,16 @@ async function updateChallenge(
   roleType: RoleType
 ) {
   const { name, entity, pts, details } = rolesConfig[roleType];
-  const role = await entity.get(address);
+  let role = await entity.get(address);
 
   logger.info(`update${name}Challenges: ${address}`);
   if (!role) {
-    logger.warn(`cannot find ${name.toLowerCase()} to add challenge: ${address}, ${type}`);
-    return;
+    logger.warn(`Add new ${name}: ${address}`);
+    role = entity.create({
+      id: address,
+      singleChallengePts: 0,
+      singleChallenges: [],
+    });
   }
 
   const result = role.singleChallenges.findIndex(({ title }) => title === type);
