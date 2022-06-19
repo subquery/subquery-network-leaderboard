@@ -6,43 +6,26 @@ import {
   OfferAcceptedEvent,
   PurchaseOfferCreatedEvent,
 } from '@subql/contract-sdk/typechain/PurchaseOfferMarket';
-import { Indexer, Consumer } from '../types';
+import assert from 'assert';
 
 import { updateConsumerChallenges, updateIndexerChallenges } from './utils';
-import assert from 'assert';
 
 export async function handleOfferAccepted(
   event: AcalaEvmEvent<OfferAcceptedEvent['args']>
 ): Promise<void> {
-  const indexer = await Indexer.get(event.address);
-  assert(indexer, `Expected indexer to exist: ${event.address}`);
+  logger.info('handleOfferAccepted');
+  assert(event.args, 'No event args');
 
-  await updateIndexerChallenges(
-    event.address,
-    'OFFER_ACCEPTED',
-    event.blockTimestamp
-  );
+  const { indexer } = event.args;
+  await updateIndexerChallenges(indexer, 'OFFER_ACCEPTED', event.blockTimestamp);
 }
 
 export async function handlePurchaseOfferCreated(
   event: AcalaEvmEvent<PurchaseOfferCreatedEvent['args']>
 ): Promise<void> {
-  const consumer = await Consumer.get(event.address);
+  logger.info('handlePurchaseOfferCreated');
+  assert(event.args, 'No event args');
 
-  //FIXME: could be created on another event but this is the only consumer challenge for now
-  if (!consumer) {
-    const consumer = Consumer.create({
-      id: event.address,
-      singleChallengePts: 0,
-      singleChallenges: [],
-    });
-
-    await consumer.save();
-  }
-
-  await updateConsumerChallenges(
-    event.address,
-    'CREATE_PURCHASE_OFFER',
-    event.blockTimestamp
-  );
+  const { consumer } = event.args;
+  await updateConsumerChallenges(consumer, 'CREATE_PURCHASE_OFFER', event.blockTimestamp);
 }

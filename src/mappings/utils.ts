@@ -2,112 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import bs58 from 'bs58';
-import { BigNumber } from '@ethersproject/bignumber';
-import { EraManager } from '@subql/contract-sdk';
-import { Delegator, Indexer, EraValue, JSONBigInt } from '../types';
-import testnetAddresses from '@subql/contract-sdk/publish/testnet.json';
-
-interface Challenge_Pts {
-  [key: string]: number;
-}
-interface Challenge_Details {
-  [key: string]: string;
-}
-
-export const SEASON_2_END = 340176;
-
-export const INDEXER_CHALLENGE_PTS: Challenge_Pts = {
-  INDEX_SINGLE: 10,
-  INDEX_ALL: 50,
-  ATTRACT_DELEGATOR: 20,
-  CHANGE_COMMISSION: 10,
-  DEFAULT_PLAN: 50,
-  OVERRIDE_PLAN: 50,
-  SERVICE_AGREEMENT: 50,
-  CLAIM_REWARD: 20,
-  WITHDRAW_CLAIMED: 50,
-  INDEXER_UNDELEGATED: 20,
-  UNREGISTER_INDEXER: 30,
-  PLAN_BY_TEMPLATE: 30,
-  OFFER_ACCEPTED: 50,
-};
-
-export const INDEXER_CHALLENGE_DETAILS: Challenge_Details = {
-  INDEX_SINGLE: 'Fully index a project from demo projects list',
-  INDEX_ALL: 'Index all projects from demo projects list',
-  ATTRACT_DELEGATOR: 'Get your first delegator',
-  CHANGE_COMMISSION: 'Either increase of decrease commission rate',
-  DEFAULT_PLAN: 'Create a default plan',
-  OVERRIDE_PLAN: 'Create a override plan',
-  SERVICE_AGREEMENT: 'Get a service agreement from consumer',
-  CLAIM_REWARD: 'Indexer claims a reward',
-  WITHDRAW_CLAIMED: 'Delegator withdraws unstaked amount from Indexer',
-  INDEXER_UNDELEGATED: 'Indexer gets delegation removed',
-  UNREGISTER_INDEXER: 'Unregister your indexer',
-  PLAN_BY_TEMPLATE: 'Create a plan using a plan template',
-  OFFER_ACCEPTED: 'A purchase offer is accepted by Indexer',
-};
-
-export const DELEGATOR_CHALLENGE_PTS: Challenge_Pts = {
-  CLAIM_REWARD: 20,
-  WITHDRAW_CLAIMED: 50,
-  UNDELEGATE_INDEXER: 50,
-};
-
-export const DELEGATOR_CHALLENGE_DETAILS: Challenge_Details = {
-  CLAIM_REWARD: 'Indexer claims a reward',
-  WITHDRAW_CLAIMED: 'Delegator withdraws unstaked amount from indexer',
-  UNDELEGATE_INDEXER: 'Delegator removed delegation to indexer',
-};
-
-export const CONSUMER_CHALLENGE_PTS: Challenge_Pts = {
-  CREATE_PURCHASE_OFFER: 50,
-};
-
-export const CONSUMER_CHALLENGE_DETAILS: Challenge_Details = {
-  CREATE_PURCHASE_OFFER: 'A purchase offer is created by Consumer',
-};
-
-export const DEMO_PROJECTS = [
-  'QmYR8xQgAXuCXMPGPVxxR91L4VtKZsozCM7Qsa5oAbyaQ3', //Staking Threshold - Polkadot
-  'QmSzPQ9f4U1GERvN1AxJ28xq9B5s4M72CPvotmmv1N2bN7', //Staking Threshold - Kusama
-];
-
-export const ERA_MANAGER_ADDRESS = testnetAddresses.EraManager.address;
-export const PLAN_MANAGER_ADDRESS = testnetAddresses.PlanManager.address;
-export const SA_REGISTRY_ADDRESS =
-  testnetAddresses.ServiceAgreementRegistry.address;
-export const REWARD_DIST_ADDRESS = testnetAddresses.RewardsDistributer.address;
-
-declare global {
-  interface BigIntConstructor {
-    fromJSONType(value: unknown): bigint;
-  }
-  interface BigInt {
-    toJSON(): string;
-    toJSONType(): JSONBigInt;
-    fromJSONType(value: unknown): bigint;
-  }
-}
-
-BigInt.prototype.toJSON = function (): string {
-  return BigNumber.from(this).toHexString();
-};
-
-BigInt.prototype.toJSONType = function () {
-  return {
-    type: 'bigint',
-    value: this.toJSON(),
-  };
-};
-
-BigInt.fromJSONType = function (value: JSONBigInt): bigint {
-  if (value?.type !== 'bigint' && !value.value) {
-    throw new Error('Value is not JSOBigInt');
-  }
-
-  return BigNumber.from(value.value).toBigInt();
-};
+import { Delegator, Indexer } from '../types';
+import {
+  INDEXER_CHALLENGE_PTS,
+  INDEXER_CHALLENGE_DETAILS,
+  DELEGATOR_CHALLENGE_PTS,
+  DELEGATOR_CHALLENGE_DETAILS,
+  CONSUMER_CHALLENGE_PTS,
+  CONSUMER_CHALLENGE_DETAILS,
+} from './constants';
 
 export function bytesToIpfsCid(raw: string): string {
   // Add our default ipfs values for first 2 bytes:
@@ -118,139 +21,6 @@ export function bytesToIpfsCid(raw: string): string {
   return bs58.encode(hashBytes);
 }
 
-export function bnToDate(bn: BigNumber): Date {
-  return new Date(bn.toNumber() * 1000);
-}
-
-export const operations: Record<string, (a: bigint, b: bigint) => bigint> = {
-  add: (a, b) => a + b,
-  sub: (a, b) => a - b,
-  replace: (a, b) => b,
-};
-
-export async function upsertEraValue(
-  eraManager: EraManager,
-  eraValue: EraValue | undefined,
-  value: bigint,
-  operation: keyof typeof operations = 'add',
-  applyInstantly?: boolean
-): Promise<EraValue> {
-  const currentEra = await eraManager.eraNumber().then((r) => r.toNumber());
-
-  if (!eraValue) {
-    return {
-      era: currentEra,
-      value: (applyInstantly ? value : BigInt(0)).toJSONType(),
-      valueAfter: value.toJSONType(),
-    };
-  }
-
-  const applyOperation = (existing: JSONBigInt) =>
-    operations[operation](BigInt.fromJSONType(existing), value).toJSONType();
-
-  const valueAfter = applyOperation(eraValue.valueAfter);
-
-  if (eraValue.era === currentEra) {
-    const newValue = applyInstantly
-      ? applyOperation(eraValue.value)
-      : eraValue.value;
-
-    return {
-      era: currentEra,
-      value: newValue,
-      valueAfter,
-    };
-  }
-
-  const newValue = applyInstantly
-    ? applyOperation(eraValue.valueAfter)
-    : eraValue.valueAfter;
-
-  return {
-    era: currentEra,
-    value: newValue,
-    valueAfter,
-  };
-}
-
-export async function updateTotalStake(
-  eraManager: EraManager,
-  indexerAddress: string,
-  amount: bigint,
-  operation: keyof typeof operations,
-  applyInstantly?: boolean
-): Promise<void> {
-  let indexer = await Indexer.get(indexerAddress);
-
-  if (!indexer) {
-    indexer = Indexer.create({
-      id: indexerAddress,
-      totalStake: await upsertEraValue(
-        eraManager,
-        undefined,
-        amount,
-        operation,
-        applyInstantly
-      ),
-      commission: await upsertEraValue(
-        eraManager,
-        undefined,
-        BigInt(0),
-        operation,
-        applyInstantly
-      ),
-      singleChallengePts: 0,
-      demoProjectsIndexed: [],
-      singleChallenges: [],
-    });
-  } else {
-    indexer.totalStake = await upsertEraValue(
-      eraManager,
-      indexer.totalStake,
-      amount,
-      operation,
-      applyInstantly
-    );
-  }
-
-  await indexer.save();
-}
-
-export async function updateTotalDelegation(
-  eraManager: EraManager,
-  delegatorAddress: string,
-  amount: bigint,
-  operation: keyof typeof operations = 'add',
-  applyInstantly?: boolean
-): Promise<void> {
-  let delegator = await Delegator.get(delegatorAddress);
-
-  if (!delegator) {
-    delegator = Delegator.create({
-      id: delegatorAddress,
-      totalDelegations: await upsertEraValue(
-        eraManager,
-        undefined,
-        amount,
-        operation,
-        applyInstantly
-      ),
-      singleChallengePts: 0,
-      singleChallenges: [],
-    });
-  } else {
-    delegator.totalDelegations = await upsertEraValue(
-      eraManager,
-      delegator.totalDelegations,
-      amount,
-      operation,
-      applyInstantly
-    );
-  }
-
-  await delegator.save();
-}
-
 export async function updateIndexerChallenges(
   indexerAddress: string,
   challengeType: string,
@@ -259,15 +29,11 @@ export async function updateIndexerChallenges(
   const indexerRecord = await Indexer.get(indexerAddress);
 
   if (!indexerRecord) {
-    logger.warn(
-      `cannot find indexer to add challenge: ${indexerAddress}, ${challengeType}`
-    );
+    logger.warn(`cannot find indexer to add challenge: ${indexerAddress}, ${challengeType}`);
     return;
   }
 
-  const result = indexerRecord.singleChallenges.findIndex(
-    ({ title }) => title === challengeType
-  );
+  const result = indexerRecord.singleChallenges.findIndex(({ title }) => title === challengeType);
 
   if (result === -1) {
     const length = indexerRecord.singleChallenges.push({
@@ -277,8 +43,7 @@ export async function updateIndexerChallenges(
       timestamp: blockTimestamp,
     });
 
-    indexerRecord.singleChallengePts +=
-      indexerRecord.singleChallenges[length - 1].points;
+    indexerRecord.singleChallengePts += indexerRecord.singleChallenges[length - 1].points;
   }
 
   logger.info(
@@ -304,15 +69,11 @@ export async function updateDelegatorChallenges(
   );
 
   if (!delegatorRecord) {
-    logger.warn(
-      `cannot find delegator to add challenge: ${delegatorAddress}, ${challengeType}`
-    );
+    logger.warn(`cannot find delegator to add challenge: ${delegatorAddress}, ${challengeType}`);
     return;
   }
 
-  const result = delegatorRecord.singleChallenges.findIndex(
-    ({ title }) => title === challengeType
-  );
+  const result = delegatorRecord.singleChallenges.findIndex(({ title }) => title === challengeType);
 
   if (result === -1) {
     const length = delegatorRecord.singleChallenges.push({
@@ -322,8 +83,7 @@ export async function updateDelegatorChallenges(
       timestamp: blockTimestamp,
     });
 
-    delegatorRecord.singleChallengePts +=
-      delegatorRecord.singleChallenges[length - 1].points;
+    delegatorRecord.singleChallengePts += delegatorRecord.singleChallenges[length - 1].points;
   }
 
   await delegatorRecord.save();
@@ -343,26 +103,21 @@ export async function updateConsumerChallenges(
   );
 
   if (!delegatorRecord) {
-    logger.warn(
-      `cannot find delegator to add challenge: ${delegatorAddress}, ${challengeType}`
-    );
+    logger.warn(`cannot find delegator to add challenge: ${delegatorAddress}, ${challengeType}`);
     return;
   }
 
-  const result = delegatorRecord.singleChallenges.findIndex(
-    ({ title }) => title === challengeType
-  );
+  const result = delegatorRecord.singleChallenges.findIndex(({ title }) => title === challengeType);
 
   if (result === -1) {
     const length = delegatorRecord.singleChallenges.push({
       title: challengeType,
-      points: DELEGATOR_CHALLENGE_PTS[challengeType],
-      details: DELEGATOR_CHALLENGE_DETAILS[challengeType],
+      points: CONSUMER_CHALLENGE_PTS[challengeType],
+      details: CONSUMER_CHALLENGE_DETAILS[challengeType],
       timestamp: blockTimestamp,
     });
 
-    delegatorRecord.singleChallengePts +=
-      delegatorRecord.singleChallenges[length - 1].points;
+    delegatorRecord.singleChallengePts += delegatorRecord.singleChallenges[length - 1].points;
   }
 
   await delegatorRecord.save();

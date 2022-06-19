@@ -1,27 +1,27 @@
-type Indexer @entity {
-  id: ID! # Indexers address
-
-  singleChallengePts: Int!
-  singleChallenges: [SingleChallengesRecord]! # Record of single challenges acheived
-}
-
-type Delegator @entity {
-  id: ID! # Indexers address
-  
-  singleChallengePts: Int!
-  singleChallenges: [SingleChallengesRecord]! # Record of single challenges acheived
-}
-
-type Consumer @entity {
-  id: ID! # Indexers address
-
-  singleChallengePts: Int!
-  singleChallenges: [SingleChallengesRecord]! # Record of single challenges acheived
-}
-
 type SingleChallengesRecord @jsonField {
   title: String!
   points: Int!
   details: String!
   timestamp: Date!
+}
+
+type Indexer @entity {
+  id: ID! # Indexer address
+
+  singleChallengePts: Int!
+  singleChallenges: [SingleChallengesRecord]!
+}
+
+type Delegator @entity {
+  id: ID! # Delegator address
+  
+  singleChallengePts: Int!
+  singleChallenges: [SingleChallengesRecord]!
+}
+
+type Consumer @entity {
+  id: ID! # Consumer address
+
+  singleChallengePts: Int!
+  singleChallenges: [SingleChallengesRecord]!
 }
