@@ -2,15 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import bs58 from 'bs58';
-import { Delegator, Indexer } from '../types';
-import {
-  INDEXER_CHALLENGE_PTS,
-  INDEXER_CHALLENGE_DETAILS,
-  DELEGATOR_CHALLENGE_PTS,
-  DELEGATOR_CHALLENGE_DETAILS,
-  CONSUMER_CHALLENGE_PTS,
-  CONSUMER_CHALLENGE_DETAILS,
-} from './constants';
+import { rolesConfig, RoleType } from './constants';
 
 export function bytesToIpfsCid(raw: string): string {
   // Add our default ipfs values for first 2 bytes:
@@ -21,104 +13,57 @@ export function bytesToIpfsCid(raw: string): string {
   return bs58.encode(hashBytes);
 }
 
-export async function updateIndexerChallenges(
-  indexerAddress: string,
-  challengeType: string,
-  blockTimestamp: Date
-): Promise<void> {
-  const indexerRecord = await Indexer.get(indexerAddress);
+async function updateChallenge(
+  address: string,
+  type: string,
+  blockTimestamp: Date,
+  roleType: RoleType
+) {
+  const { name, entity, pts, details } = rolesConfig[roleType];
+  const role = await entity.get(address);
 
-  if (!indexerRecord) {
-    logger.warn(`cannot find indexer to add challenge: ${indexerAddress}, ${challengeType}`);
+  logger.info(`update${name}Challenges: ${address}`);
+  if (!role) {
+    logger.warn(`cannot find ${name.toLowerCase()} to add challenge: ${address}, ${type}`);
     return;
   }
 
-  const result = indexerRecord.singleChallenges.findIndex(({ title }) => title === challengeType);
+  const result = role.singleChallenges.findIndex(({ title }) => title === type);
 
   if (result === -1) {
-    const length = indexerRecord.singleChallenges.push({
-      title: challengeType,
-      points: INDEXER_CHALLENGE_PTS[challengeType],
-      details: INDEXER_CHALLENGE_DETAILS[challengeType],
+    const length = role.singleChallenges.push({
+      title: type,
+      points: pts[type],
+      details: details[type],
       timestamp: blockTimestamp,
     });
 
-    indexerRecord.singleChallengePts += indexerRecord.singleChallenges[length - 1].points;
+    role.singleChallengePts += role.singleChallenges[length - 1].points;
   }
 
-  logger.info(
-    `updateIndexerChallenges: ${indexerAddress}, ${challengeType}, ${result}, ${JSON.stringify(
-      indexerRecord.singleChallenges
-    )}`
-  );
+  await role.save();
+}
 
-  await indexerRecord.save();
+export async function updateIndexerChallenges(
+  indexer: string,
+  type: string,
+  blockTimestamp: Date
+): Promise<void> {
+  await updateChallenge(indexer, type, blockTimestamp, RoleType.Indexer);
 }
 
 export async function updateDelegatorChallenges(
-  delegatorAddress: string,
-  challengeType: string,
+  delegator: string,
+  type: string,
   blockTimestamp: Date
 ): Promise<void> {
-  const delegatorRecord = await Delegator.get(delegatorAddress);
-
-  logger.info(
-    `updateDelegatorChallenges: ${delegatorAddress}, ${challengeType}, ${
-      delegatorRecord ? 'true' : 'false'
-    } `
-  );
-
-  if (!delegatorRecord) {
-    logger.warn(`cannot find delegator to add challenge: ${delegatorAddress}, ${challengeType}`);
-    return;
-  }
-
-  const result = delegatorRecord.singleChallenges.findIndex(({ title }) => title === challengeType);
-
-  if (result === -1) {
-    const length = delegatorRecord.singleChallenges.push({
-      title: challengeType,
-      points: DELEGATOR_CHALLENGE_PTS[challengeType],
-      details: DELEGATOR_CHALLENGE_DETAILS[challengeType],
-      timestamp: blockTimestamp,
-    });
-
-    delegatorRecord.singleChallengePts += delegatorRecord.singleChallenges[length - 1].points;
-  }
-
-  await delegatorRecord.save();
+  await updateChallenge(delegator, type, blockTimestamp, RoleType.Delegator);
 }
 
 export async function updateConsumerChallenges(
-  delegatorAddress: string,
-  challengeType: string,
+  consumer: string,
+  type: string,
   blockTimestamp: Date
 ): Promise<void> {
-  const delegatorRecord = await Delegator.get(delegatorAddress);
-
-  logger.info(
-    `updateDelegatorChallenges: ${delegatorAddress}, ${challengeType}, ${
-      delegatorRecord ? 'true' : 'false'
-    } `
-  );
-
-  if (!delegatorRecord) {
-    logger.warn(`cannot find delegator to add challenge: ${delegatorAddress}, ${challengeType}`);
-    return;
-  }
-
-  const result = delegatorRecord.singleChallenges.findIndex(({ title }) => title === challengeType);
-
-  if (result === -1) {
-    const length = delegatorRecord.singleChallenges.push({
-      title: challengeType,
-      points: CONSUMER_CHALLENGE_PTS[challengeType],
-      details: CONSUMER_CHALLENGE_DETAILS[challengeType],
-      timestamp: blockTimestamp,
-    });
-
-    delegatorRecord.singleChallengePts += delegatorRecord.singleChallenges[length - 1].points;
-  }
-
-  await delegatorRecord.save();
+  await updateChallenge(consumer, type, blockTimestamp, RoleType.Consumer);
 }

@@ -19,13 +19,10 @@ export async function handlePlanCreated(
 
   const { creator, deploymentId } = event.args;
   const challengeType = constants.HashZero === deploymentId ? 'DEFAULT_PLAN' : 'OVERRIDE_PLAN';
-
   await updateIndexerChallenges(creator, challengeType, event.blockTimestamp);
 
   const planManager = PlanManager__factory.connect(PLAN_MANAGER_ADDRESS, new FrontierEthProvider());
-
   const template = await planManager.planTemplates(event.args.planTemplateId);
-
   if (template) {
     await updateIndexerChallenges(creator, 'PLAN_BY_TEMPLATE', event.blockTimestamp);
   }

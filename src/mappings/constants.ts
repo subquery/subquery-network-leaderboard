@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import testnetAddresses from '@subql/contract-sdk/publish/testnet.json';
+import { Indexer, Delegator, Consumer } from '../types';
 
 interface Challenge_Pts {
   [key: string]: number;
@@ -81,3 +82,32 @@ export const PLAN_MANAGER_ADDRESS = testnetAddresses.PlanManager.address;
 export const REWARD_DIST_ADDRESS = testnetAddresses.RewardsDistributer.address;
 export const STAKING_ADDRESS = testnetAddresses.Staking.address;
 export const SA_REGISTRY_ADDRESS = testnetAddresses.ServiceAgreementRegistry.address;
+
+export type Role = Indexer | Delegator | Consumer;
+
+export enum RoleType {
+  Indexer,
+  Delegator,
+  Consumer,
+}
+
+export const rolesConfig = {
+  [RoleType.Indexer]: {
+    name: 'Indexer',
+    entity: Indexer,
+    pts: INDEXER_CHALLENGE_PTS,
+    details: INDEXER_CHALLENGE_DETAILS,
+  },
+  [RoleType.Delegator]: {
+    name: 'Delegator',
+    entity: Delegator,
+    pts: DELEGATOR_CHALLENGE_PTS,
+    details: DELEGATOR_CHALLENGE_DETAILS,
+  },
+  [RoleType.Consumer]: {
+    name: 'Consumer',
+    entity: Consumer,
+    pts: CONSUMER_CHALLENGE_PTS,
+    details: CONSUMER_CHALLENGE_DETAILS,
+  },
+};
