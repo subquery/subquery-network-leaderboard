@@ -21,7 +21,7 @@ network:
 
 x-frontier: &frontier
   kind: substrate/AcalaEvm
-  startBlock: 1231931
+  startBlock: 1376700 # FIXME: need to change back to initial block
   processor: &frontier-processor
     file: './dist/acalaEvm.js'
   assets:
@@ -55,6 +55,11 @@ dataSources:
           filter:
             topics:
               - UnregisterIndexer(address indexed indexer)
+        - handler: handleUpdateController
+          kind: substrate/AcalaEvmEvent
+          filter:
+            topics:
+              - SetControllerAccount(address indexed indexer, address indexed controller)
   - <<: *frontier
     processor:
       <<: *frontier-processor
@@ -154,13 +159,13 @@ dataSources:
     mapping:
       file: ./dist/index.js
       handlers:
-        - handler: handleOfferAccepted
-          kind: substrate/AcalaEvmEvent
-          filter: 
-            topics:
-              - OfferAccepted(address indexed indexer, uint256 offerId, address agreement)
         - handler: handlePurchaseOfferCreated
           kind: substrate/AcalaEvmEvent
           filter: 
             topics: 
               - PurchaseOfferCreated(address consumer, uint256 offerId, bytes32 deploymentId, uint256 planTemplateId, uint256 deposit, uint16 limit, uint256 minimumAcceptHeight, uint256 expireDate)
+        - handler: handlePurchaseOfferCancelled
+          kind: substrate/AcalaEvmEvent
+          filter: 
+            topics: 
+              - PurchaseOfferCancelled(address indexed creator, uint256 offerId, uint256 penalty);

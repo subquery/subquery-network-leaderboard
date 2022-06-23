@@ -24,8 +24,10 @@ export async function handleServiceAgreementCreated(
   // planId != 0 => agreement is created from `purchasePlan`
   const planId = await serviceAgreement.planId();
   if (planId.eq(0)) {
-    await updateIndexerChallenges(indexer, 'SERVICE_AGREEMENT', event.blockTimestamp);
+    await updateConsumerChallenges(indexer, 'SERVICE_AGREEMENT_CREATED', event.blockTimestamp);
+    await updateIndexerChallenges(indexer, 'ACCEPT_OFFER', event.blockTimestamp);
   } else {
-    await updateConsumerChallenges(consumer, 'SERVICE_AGREEMENT', event.blockTimestamp);
+    await updateIndexerChallenges(indexer, 'SERVICE_AGREEMENT_CREATED', event.blockTimestamp);
+    await updateConsumerChallenges(consumer, 'PURCHASE_PLAN', event.blockTimestamp);
   }
 }

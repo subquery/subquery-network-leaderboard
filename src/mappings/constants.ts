@@ -38,8 +38,9 @@ export const INDEXER_CHALLENGE_DETAILS: Challenge_Details = {
   CREATE_DEFAULT_PLAN: 'Create a default plan',
   CREATE_SPECIFIC_PLAN: 'Create a deployment-specific plan',
   SERVICE_AGREEMENT_CREATED: 'Get a service agreement from consumer',
-  CLAIM_REWARD: "Indexer claims a reward from reward distributor to indexer's wallet",
-  WITHDRAW_UNSTAKED: "Indexer withdraws unstaked amount from staking contract to indexer's wallet",
+  CLAIM_REWARD: "Indexer claims a reward from reward distributor to an indexer's wallet",
+  WITHDRAW_UNSTAKED:
+    "Indexer withdraws unstaked amount from staking contract to an indexer's wallet",
   INDEXER_UNDELEGATED: 'Indexer gets undelegated from delegator',
   ACCEPT_OFFER: 'Indexer to accept an offer in the offer market',
   UPDATE_CONTROLLER: 'Update controller account to new one',
@@ -57,7 +58,7 @@ export const DELEGATOR_CHALLENGE_DETAILS: Challenge_Details = {
   CLAIM_REWARD: "Delegator claims a reward from reward distributor to delegator's wallet",
   DELEGATE_TO_INDEXER: 'Delegator add delegation to an indexer',
   UNDELEGATE_FROM_INDEXER: 'Delegator undelegate from an indexer',
-  WITHDRAW_DELEGATION: 'Delegator withdraws undelegated amount from indexer',
+  WITHDRAW_DELEGATION: 'Delegator withdraws undelegated amount from an indexer',
 };
 
 export const CONSUMER_CHALLENGE_PTS: Challenge_Pts = {
@@ -69,9 +70,9 @@ export const CONSUMER_CHALLENGE_PTS: Challenge_Pts = {
 };
 
 export const CONSUMER_CHALLENGE_DETAILS: Challenge_Details = {
-  PURCHASE_PLAN: 'Consumer purchase a plan from indexer',
+  PURCHASE_PLAN: 'Consumer purchase a plan from an indexer',
   CREATE_PURCHASE_OFFER: 'A purchase offer is created by consumer',
-  SERVICE_AGREEMENT_CREATED: 'Get service agreement from indexer',
+  SERVICE_AGREEMENT_CREATED: 'Get service agreement from an indexer',
   CANCEL_PURCHASE_OFFER: 'Cancel offer before it expires',
   WITHDRAW_PURCHASE_OFFER: 'Withdraw SQT locked in the offer after it expires',
 };
@@ -88,6 +89,7 @@ export const PLAN_MANAGER_ADDRESS = testnetAddresses.PlanManager.address;
 export const REWARD_DIST_ADDRESS = testnetAddresses.RewardsDistributer.address;
 export const STAKING_ADDRESS = testnetAddresses.Staking.address;
 export const SA_REGISTRY_ADDRESS = testnetAddresses.ServiceAgreementRegistry.address;
+export const PURCHASE_OFFER_ADDRESS = testnetAddresses.PurchaseOfferMarket.address;
 
 export type Role = Indexer | Delegator | Consumer;
 
