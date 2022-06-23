@@ -3,11 +3,10 @@
 
 import assert from 'assert';
 import { ClosedAgreementCreatedEvent } from '@subql/contract-sdk/typechain/ServiceAgreementRegistry';
-import { ServiceAgreement } from '../types';
-import { bytesToIpfsCid, updateIndexerChallenges } from './utils';
-import { IServiceAgreement__factory } from '@subql/contract-sdk';
-import FrontierEthProvider from './ethProvider';
 import { AcalaEvmEvent } from '@subql/acala-evm-processor';
+import { updateConsumerChallenges, updateIndexerChallenges } from './utils';
+import { IClosedServiceAgreement__factory } from '@subql/contract-sdk';
+import FrontierEthProvider from './ethProvider';
 
 export async function handleServiceAgreementCreated(
   event: AcalaEvmEvent<ClosedAgreementCreatedEvent['args']>
@@ -15,35 +14,18 @@ export async function handleServiceAgreementCreated(
   logger.info('handleClosedServiceAgreementCreated');
   assert(event.args, 'No event args');
 
-  const saContract = IServiceAgreement__factory.connect(
-    event.args.serviceAgreement,
+  const { indexer, consumer, serviceAgreement: contractAddress } = event.args;
+  const serviceAgreement = IClosedServiceAgreement__factory.connect(
+    contractAddress,
     new FrontierEthProvider()
   );
 
-  const [period, value] = await Promise.all([
-    saContract.period(),
-    saContract.value(),
-  ]);
-
-  const endTime = new Date(event.blockTimestamp);
-
-  endTime.setSeconds(endTime.getSeconds() + period.toNumber());
-
-  const sa = ServiceAgreement.create({
-    id: event.args.serviceAgreement,
-    indexerAddress: event.args.indexer,
-    consumerAddress: event.args.consumer,
-    deploymentId: bytesToIpfsCid(event.args.deploymentId),
-    period: period.toBigInt(),
-    value: value.toBigInt(),
-    startTime: event.blockTimestamp,
-    endTime,
-  });
-
-  await sa.save();
-  await updateIndexerChallenges(
-    event.args.indexer,
-    'SERVICE_AGREEMENT',
-    event.blockTimestamp
-  );
+  // planId == 0 => agreement is created from `acceptPurchaseOffer`
+  // planId != 0 => agreement is created from `purchasePlan`
+  const planId = await serviceAgreement.planId();
+  if (planId.eq(0)) {
+    await updateIndexerChallenges(indexer, 'SERVICE_AGREEMENT', event.blockTimestamp);
+  } else {
+    await updateConsumerChallenges(consumer, 'SERVICE_AGREEMENT', event.blockTimestamp);
+  }
 }
