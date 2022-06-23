@@ -79,11 +79,6 @@ dataSources:
           filter:
             topics:
               - DelegationRemoved(address indexed source, address indexed indexer, uint256 amount)
-        - handler: handleWithdrawRequested
-          kind: substrate/AcalaEvmEvent
-          filter:
-            topics:
-              - UnbondRequested(address indexed source, address indexed indexer, uint256 amount, uint256 index)
         - handler: handleWithdrawClaimed
           kind: substrate/AcalaEvmEvent
           filter:
@@ -168,4 +163,4 @@ dataSources:
           kind: substrate/AcalaEvmEvent
           filter: 
             topics: 
-              - PurchaseOfferCancelled(address indexed creator, uint256 offerId, uint256 penalty);
+              - PurchaseOfferCancelled(address indexed creator, uint256 offerId, uint256 penalty)
