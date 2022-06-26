@@ -3,22 +3,15 @@
 
 import { AcalaEvmEvent } from '@subql/acala-evm-processor';
 import {
-  OfferAcceptedEvent,
   PurchaseOfferCreatedEvent,
+  PurchaseOfferCancelledEvent,
 } from '@subql/contract-sdk/typechain/PurchaseOfferMarket';
+import { PurchaseOfferMarket__factory } from '@subql/contract-sdk';
 import assert from 'assert';
 
-import { updateConsumerChallenges, updateIndexerChallenges } from './utils';
-
-export async function handleOfferAccepted(
-  event: AcalaEvmEvent<OfferAcceptedEvent['args']>
-): Promise<void> {
-  logger.info('handleOfferAccepted');
-  assert(event.args, 'No event args');
-
-  const { indexer } = event.args;
-  await updateIndexerChallenges(indexer, 'OFFER_ACCEPTED', event.blockTimestamp);
-}
+import { updateConsumerChallenges } from './utils';
+import { PURCHASE_OFFER_ADDRESS } from './constants';
+import FrontierEthProvider from './ethProvider';
 
 export async function handlePurchaseOfferCreated(
   event: AcalaEvmEvent<PurchaseOfferCreatedEvent['args']>
@@ -28,4 +21,21 @@ export async function handlePurchaseOfferCreated(
 
   const { consumer } = event.args;
   await updateConsumerChallenges(consumer, 'CREATE_PURCHASE_OFFER', event.blockTimestamp);
+}
+
+export async function handlePurchaseOfferCancelled(
+  event: AcalaEvmEvent<PurchaseOfferCancelledEvent['args']>
+): Promise<void> {
+  logger.info('handlePurchaseOfferCancelled');
+  assert(event.args, 'No event args');
+
+  const { creator, offerId } = event.args;
+  const purchaseOfferMarket = PurchaseOfferMarket__factory.connect(
+    PURCHASE_OFFER_ADDRESS,
+    new FrontierEthProvider()
+  );
+  const isExpired = await purchaseOfferMarket.isExpired(offerId);
+
+  const challenge = isExpired ? 'WITHDRAW_PURCHASE_OFFER' : 'CANCEL_PURCHASE_OFFER';
+  await updateConsumerChallenges(creator, challenge, event.blockTimestamp);
 }
