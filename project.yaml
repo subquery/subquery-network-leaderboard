@@ -21,7 +21,7 @@ network:
 
 x-frontier: &frontier
   kind: substrate/AcalaEvm
-  startBlock: 1376700 # FIXME: need to change back to initial block
+  startBlock: 1379240 # FIXME: need to change back to initial block
   processor: &frontier-processor
     file: './dist/acalaEvm.js'
   assets:
