@@ -11,8 +11,8 @@ interface Challenge_Details {
   [key: string]: string;
 }
 
-// TODO: add season3_end time
-export const SEASON_2_END = 340176;
+// TODO: add season3_end time (blockheight) average block time: 12.4s
+export const SEASON_3_END = 340176;
 
 export const INDEXER_CHALLENGE_PTS: Challenge_Pts = {
   INDEX_SINGLE_PROJECT: 10,
@@ -77,10 +77,12 @@ export const CONSUMER_CHALLENGE_DETAILS: Challenge_Details = {
   WITHDRAW_PURCHASE_OFFER: 'Withdraw SQT locked in the offer after it expires',
 };
 
-// FIXME: this will be changed for `season3`
+// season3 projects
 export const TESTNET_PROJECTS = [
-  'QmYR8xQgAXuCXMPGPVxxR91L4VtKZsozCM7Qsa5oAbyaQ3', //Staking Threshold - Polkadot
-  'QmSzPQ9f4U1GERvN1AxJ28xq9B5s4M72CPvotmmv1N2bN7', //Staking Threshold - Kusama
+  'QmduAur8aCENpuizuTGLAsXumG2BX8zSgWLsVpp5b8GEGN', // Staking Threshold - Polkadot
+  // FIXME: need to confirm with the latest projects
+  'Qme3w3xSaopXuCsXPxHgJ3ynBDctT9DC7VtLiAxsgF35KV', // Pangolin Approvals - Avalanche
+  'QmPvVCLttKnWkf3CdPtSQqWRkmz6hAAYfwaBxnN4Hht3ro', // Developer Fund Votes - Juno
 ];
 
 export const QUERY_REGISTRY_ADDRESS = testnetAddresses.QueryRegistry.address;
