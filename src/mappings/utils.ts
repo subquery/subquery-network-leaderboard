@@ -17,8 +17,15 @@ async function updateChallenge(
   address: string,
   type: string,
   blockTimestamp: Date,
+  blockHeight: number,
   roleType: RoleType
 ) {
+  //TODO: Add endblock height check when we know what SEASON_3_END is
+  // if (blockHeight >= SEASON_3_END) {
+  //   logger.info('season 3 has ended');
+  //   return;
+  // }
+
   const { name, entity, pts, details } = rolesConfig[roleType];
   let role = await entity.get(address);
 
@@ -51,23 +58,26 @@ async function updateChallenge(
 export async function updateIndexerChallenges(
   indexer: string,
   type: string,
-  blockTimestamp: Date
+  blockTimestamp: Date,
+  blockHeight: number
 ): Promise<void> {
-  await updateChallenge(indexer, type, blockTimestamp, RoleType.Indexer);
+  await updateChallenge(indexer, type, blockTimestamp, blockHeight, RoleType.Indexer);
 }
 
 export async function updateDelegatorChallenges(
   delegator: string,
   type: string,
-  blockTimestamp: Date
+  blockTimestamp: Date,
+  blockHeight: number
 ): Promise<void> {
-  await updateChallenge(delegator, type, blockTimestamp, RoleType.Delegator);
+  await updateChallenge(delegator, type, blockTimestamp, blockHeight, RoleType.Delegator);
 }
 
 export async function updateConsumerChallenges(
   consumer: string,
   type: string,
-  blockTimestamp: Date
+  blockTimestamp: Date,
+  blockHeight: number
 ): Promise<void> {
-  await updateChallenge(consumer, type, blockTimestamp, RoleType.Consumer);
+  await updateChallenge(consumer, type, blockTimestamp, blockHeight, RoleType.Consumer);
 }

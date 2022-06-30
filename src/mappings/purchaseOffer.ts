@@ -20,7 +20,12 @@ export async function handlePurchaseOfferCreated(
   assert(event.args, 'No event args');
 
   const { consumer } = event.args;
-  await updateConsumerChallenges(consumer, 'CREATE_PURCHASE_OFFER', event.blockTimestamp);
+  await updateConsumerChallenges(
+    consumer,
+    'CREATE_PURCHASE_OFFER',
+    event.blockTimestamp,
+    event.blockNumber
+  );
 }
 
 export async function handlePurchaseOfferCancelled(
@@ -37,5 +42,5 @@ export async function handlePurchaseOfferCancelled(
   const isExpired = await purchaseOfferMarket.isExpired(offerId);
 
   const challenge = isExpired ? 'WITHDRAW_PURCHASE_OFFER' : 'CANCEL_PURCHASE_OFFER';
-  await updateConsumerChallenges(creator, challenge, event.blockTimestamp);
+  await updateConsumerChallenges(creator, challenge, event.blockTimestamp, event.blockNumber);
 }

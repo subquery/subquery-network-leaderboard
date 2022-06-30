@@ -17,5 +17,5 @@ export async function handlePlanCreated(
   const { creator, deploymentId } = event.args;
   const challengeType =
     constants.HashZero === deploymentId ? 'CREATE_DEFAULT_PLAN' : 'CREATE_SPECIFIC_PLAN';
-  await updateIndexerChallenges(creator, challengeType, event.blockTimestamp);
+  await updateIndexerChallenges(creator, challengeType, event.blockTimestamp, event.blockNumber);
 }

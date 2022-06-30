@@ -15,8 +15,13 @@ export async function handleRewardsClaimed(
   const { indexer, delegator } = event.args;
 
   if (indexer === delegator) {
-    await updateIndexerChallenges(indexer, 'CLAIM_REWARD', event.blockTimestamp);
+    await updateIndexerChallenges(indexer, 'CLAIM_REWARD', event.blockTimestamp, event.blockNumber);
   } else {
-    await updateDelegatorChallenges(delegator, 'CLAIM_REWARD', event.blockTimestamp);
+    await updateDelegatorChallenges(
+      delegator,
+      'CLAIM_REWARD',
+      event.blockTimestamp,
+      event.blockNumber
+    );
   }
 }
