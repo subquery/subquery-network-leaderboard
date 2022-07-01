@@ -19,7 +19,7 @@ export async function handleIndexingReady(
   const cid = bytesToIpfsCid(deploymentId);
 
   if (TESTNET_PROJECTS.includes(cid)) {
-    await updateIndexerChallenges(indexer, 'INDEX_SINGLE_PROJECT', event.blockTimestamp);
+    await updateIndexerChallenges(indexer, 'INDEX_SINGLE_PROJECT', event);
   }
 
   const queryRegistry = QueryRegistry__factory.connect(
@@ -29,6 +29,6 @@ export async function handleIndexingReady(
 
   const numOfIndexing = await queryRegistry.numberOfIndexingDeployments(indexer);
   if (numOfIndexing.eq(TESTNET_PROJECTS.length)) {
-    await updateIndexerChallenges(indexer, 'INDEX_ALL_PROJECTS', event.blockTimestamp);
+    await updateIndexerChallenges(indexer, 'INDEX_ALL_PROJECTS', event);
   }
 }
