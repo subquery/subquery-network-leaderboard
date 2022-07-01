@@ -16,12 +16,7 @@ export async function handleUpdateController(
   assert(event.args, 'No event args');
 
   const { indexer } = event.args;
-  await updateIndexerChallenges(
-    indexer,
-    'UPDATE_CONTROLLER',
-    event.blockTimestamp,
-    event.blockNumber
-  );
+  await updateIndexerChallenges(indexer, 'UPDATE_CONTROLLER', event);
 }
 
 export async function handleUnregisterIndexer(
@@ -31,10 +26,5 @@ export async function handleUnregisterIndexer(
   assert(event.args, 'No event args');
 
   const { indexer } = event.args;
-  await updateIndexerChallenges(
-    indexer,
-    'UNREGISTER_INDEXER',
-    event.blockTimestamp,
-    event.blockNumber
-  );
+  await updateIndexerChallenges(indexer, 'UNREGISTER_INDEXER', event);
 }

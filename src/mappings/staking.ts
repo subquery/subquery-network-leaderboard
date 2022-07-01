@@ -22,18 +22,8 @@ export async function handleAddDelegation(
 
   const { source, indexer } = event.args;
   if (source !== indexer) {
-    await updateIndexerChallenges(
-      indexer,
-      'DELEGATOR_ATTRACTED',
-      event.blockTimestamp,
-      event.blockNumber
-    );
-    await updateDelegatorChallenges(
-      source,
-      'DELEGATE_TO_INDEXER',
-      event.blockTimestamp,
-      event.blockNumber
-    );
+    await updateIndexerChallenges(indexer, 'DELEGATOR_ATTRACTED', event);
+    await updateDelegatorChallenges(source, 'DELEGATE_TO_INDEXER', event);
   }
 }
 
@@ -46,18 +36,8 @@ export async function handleRemoveDelegation(
   const { source, indexer } = event.args;
 
   // TODO: do we need to filter unstake action?
-  await updateIndexerChallenges(
-    indexer,
-    'INDEXER_UNDELEGATED',
-    event.blockTimestamp,
-    event.blockNumber
-  );
-  await updateDelegatorChallenges(
-    source,
-    'UNDELEGATE_FROM_INDEXER',
-    event.blockTimestamp,
-    event.blockNumber
-  );
+  await updateIndexerChallenges(indexer, 'INDEXER_UNDELEGATED', event);
+  await updateDelegatorChallenges(source, 'UNDELEGATE_FROM_INDEXER', event);
 }
 
 export async function handleWithdrawClaimed(
@@ -75,12 +55,7 @@ export async function handleWithdrawClaimed(
   //   event.blockTimestamp
   // );
   // TODO: WITHDRAW_UNSTAKED
-  await updateDelegatorChallenges(
-    delegator,
-    'WITHDRAW_DELEGATION',
-    event.blockTimestamp,
-    event.blockNumber
-  );
+  await updateDelegatorChallenges(delegator, 'WITHDRAW_DELEGATION', event);
 }
 
 export async function handleSetCommissionRate(
@@ -95,11 +70,6 @@ export async function handleSetCommissionRate(
   const { valueAt, valueAfter } = commissionRates;
 
   if (valueAt !== valueAfter) {
-    await updateIndexerChallenges(
-      indexer,
-      'CHANGE_COMMISSION',
-      event.blockTimestamp,
-      event.blockNumber
-    );
+    await updateIndexerChallenges(indexer, 'CHANGE_COMMISSION', event);
   }
 }

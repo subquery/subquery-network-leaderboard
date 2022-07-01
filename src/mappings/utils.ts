@@ -1,6 +1,7 @@
 // Copyright 2020-2022 SubQuery Pte Ltd authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
+import { AcalaEvmEvent } from '@subql/acala-evm-processor';
 import bs58 from 'bs58';
 import { rolesConfig, RoleType } from './constants';
 
@@ -16,12 +17,11 @@ export function bytesToIpfsCid(raw: string): string {
 async function updateChallenge(
   address: string,
   type: string,
-  blockTimestamp: Date,
-  blockHeight: number,
+  event: AcalaEvmEvent,
   roleType: RoleType
 ) {
   //TODO: Add endblock height check when we know what SEASON_3_END is
-  // if (blockHeight >= SEASON_3_END) {
+  // if (event.blockNumber >= SEASON_3_END) {
   //   logger.info('season 3 has ended');
   //   return;
   // }
@@ -46,7 +46,7 @@ async function updateChallenge(
       title: type,
       points: pts[type],
       details: details[type],
-      timestamp: blockTimestamp,
+      timestamp: event.blockTimestamp,
     });
 
     role.singleChallengePts += role.singleChallenges[length - 1].points;
@@ -58,26 +58,23 @@ async function updateChallenge(
 export async function updateIndexerChallenges(
   indexer: string,
   type: string,
-  blockTimestamp: Date,
-  blockHeight: number
+  event: AcalaEvmEvent
 ): Promise<void> {
-  await updateChallenge(indexer, type, blockTimestamp, blockHeight, RoleType.Indexer);
+  await updateChallenge(indexer, type, event, RoleType.Indexer);
 }
 
 export async function updateDelegatorChallenges(
   delegator: string,
   type: string,
-  blockTimestamp: Date,
-  blockHeight: number
+  event: AcalaEvmEvent
 ): Promise<void> {
-  await updateChallenge(delegator, type, blockTimestamp, blockHeight, RoleType.Delegator);
+  await updateChallenge(delegator, type, event, RoleType.Delegator);
 }
 
 export async function updateConsumerChallenges(
   consumer: string,
   type: string,
-  blockTimestamp: Date,
-  blockHeight: number
+  event: AcalaEvmEvent
 ): Promise<void> {
-  await updateChallenge(consumer, type, blockTimestamp, blockHeight, RoleType.Consumer);
+  await updateChallenge(consumer, type, event, RoleType.Consumer);
 }
