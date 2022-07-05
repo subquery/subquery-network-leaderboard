@@ -19,12 +19,13 @@ export async function handleUpdateController(
   await updateIndexerChallenges(indexer, 'UPDATE_CONTROLLER', event);
 }
 
-export async function handleUnregisterIndexer(
+export function handleUnregisterIndexer(
   event: AcalaEvmEvent<UnregisterIndexerEvent['args']>
-): Promise<void> {
+): void {
   logger.info('handleUnregisterIndexer');
   assert(event.args, 'No event args');
 
-  const { indexer } = event.args;
-  await updateIndexerChallenges(indexer, 'UNREGISTER_INDEXER', event);
+  // TODO: will evaluate whether need this challenge in the future
+  // const { indexer } = event.args;
+  // await updateIndexerChallenges(indexer, 'UNREGISTER_INDEXER', event);
 }
