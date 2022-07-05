@@ -86,6 +86,7 @@ export const TESTNET_PROJECTS = [
 ];
 
 export const QUERY_REGISTRY_ADDRESS = testnetAddresses.QueryRegistry.address;
+export const INDEXER_REGISTRY_ADDRESS = testnetAddresses.IndexerRegistry.address;
 export const ERA_MANAGER_ADDRESS = testnetAddresses.EraManager.address;
 export const PLAN_MANAGER_ADDRESS = testnetAddresses.PlanManager.address;
 export const REWARD_DIST_ADDRESS = testnetAddresses.RewardsDistributer.address;

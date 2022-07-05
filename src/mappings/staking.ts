@@ -1,7 +1,7 @@
 // Copyright 2020-2022 SubQuery Pte Ltd authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import { Staking__factory } from '@subql/contract-sdk';
+import { Staking__factory, IndexerRegistry__factory } from '@subql/contract-sdk';
 import {
   DelegationAddedEvent,
   DelegationRemovedEvent,
@@ -12,7 +12,7 @@ import { AcalaEvmEvent } from '@subql/acala-evm-processor';
 import assert from 'assert';
 import FrontierEthProvider from './ethProvider';
 import { updateIndexerChallenges, updateDelegatorChallenges } from './utils';
-import { STAKING_ADDRESS } from './constants';
+import { INDEXER_REGISTRY_ADDRESS, STAKING_ADDRESS } from './constants';
 
 export async function handleAddDelegation(
   event: AcalaEvmEvent<DelegationAddedEvent['args']>
@@ -46,16 +46,18 @@ export async function handleWithdrawClaimed(
   logger.info('handleWithdrawClaimed');
   assert(event.args, 'No event args');
 
-  const { source: delegator } = event.args;
+  const { source } = event.args;
+  const indexerRegistry = IndexerRegistry__factory.connect(
+    INDEXER_REGISTRY_ADDRESS,
+    new FrontierEthProvider()
+  );
 
-  // FIXME: need to figure out how to get `indexer` address
-  // await updateIndexerChallenges(
-  //   withdrawl.indexer,
-  //   'WITHDRAW_CLAIMED',
-  //   event.blockTimestamp
-  // );
-  // TODO: WITHDRAW_UNSTAKED
-  await updateDelegatorChallenges(delegator, 'WITHDRAW_DELEGATION', event);
+  const isIndexer = await indexerRegistry.isIndexer(source);
+  if (isIndexer) {
+    await updateIndexerChallenges(source, 'WITHDRAW_UNSTAKED', event);
+  }
+
+  await updateDelegatorChallenges(source, 'WITHDRAW_DELEGATION', event);
 }
 
 export async function handleSetCommissionRate(
