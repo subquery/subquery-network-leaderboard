@@ -27,7 +27,7 @@ export const INDEXER_CHALLENGE_PTS: Challenge_Pts = {
   INDEXER_UNDELEGATED: 20,
   ACCEPT_OFFER: 50,
   UPDATE_CONTROLLER: 30,
-  UNREGISTER_INDEXER: 30,
+  // UNREGISTER_INDEXER: 30,
 };
 
 export const INDEXER_CHALLENGE_DETAILS: Challenge_Details = {
@@ -44,7 +44,7 @@ export const INDEXER_CHALLENGE_DETAILS: Challenge_Details = {
   INDEXER_UNDELEGATED: 'Indexer gets undelegated from delegator',
   ACCEPT_OFFER: 'Indexer to accept an offer in the offer market',
   UPDATE_CONTROLLER: 'Update controller account to new one',
-  UNREGISTER_INDEXER: 'Unregister your indexer',
+  // UNREGISTER_INDEXER: 'Unregister your indexer',
 };
 
 export const DELEGATOR_CHALLENGE_PTS: Challenge_Pts = {
@@ -81,8 +81,7 @@ export const CONSUMER_CHALLENGE_DETAILS: Challenge_Details = {
 export const TESTNET_PROJECTS = [
   'QmduAur8aCENpuizuTGLAsXumG2BX8zSgWLsVpp5b8GEGN', // Staking Threshold - Polkadot
   'QmPZrgnpCrhU3bBXvNQG8qX3VBQTyNVj7agx1hiav14imM', // Developer Fund Votes - Juno
-  // FIXME: need to confirm with the latest projects
-  'Qme3w3xSaopXuCsXPxHgJ3ynBDctT9DC7VtLiAxsgF35KV', // Pangolin Approvals - Avalanche
+  'QmWaCmiiNNSPKVuXGfwb7m67UuUeb39MjdNTSfz6K5A9S1', // Pangolin Approvals - Avalanche
 ];
 
 export const QUERY_REGISTRY_ADDRESS = testnetAddresses.QueryRegistry.address;
