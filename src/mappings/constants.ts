@@ -80,12 +80,13 @@ export const CONSUMER_CHALLENGE_DETAILS: Challenge_Details = {
 // season3 projects
 export const TESTNET_PROJECTS = [
   'QmduAur8aCENpuizuTGLAsXumG2BX8zSgWLsVpp5b8GEGN', // Staking Threshold - Polkadot
+  'QmPZrgnpCrhU3bBXvNQG8qX3VBQTyNVj7agx1hiav14imM', // Developer Fund Votes - Juno
   // FIXME: need to confirm with the latest projects
   'Qme3w3xSaopXuCsXPxHgJ3ynBDctT9DC7VtLiAxsgF35KV', // Pangolin Approvals - Avalanche
-  'QmPvVCLttKnWkf3CdPtSQqWRkmz6hAAYfwaBxnN4Hht3ro', // Developer Fund Votes - Juno
 ];
 
 export const QUERY_REGISTRY_ADDRESS = testnetAddresses.QueryRegistry.address;
+export const INDEXER_REGISTRY_ADDRESS = testnetAddresses.IndexerRegistry.address;
 export const ERA_MANAGER_ADDRESS = testnetAddresses.EraManager.address;
 export const PLAN_MANAGER_ADDRESS = testnetAddresses.PlanManager.address;
 export const REWARD_DIST_ADDRESS = testnetAddresses.RewardsDistributer.address;
