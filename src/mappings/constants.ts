@@ -81,7 +81,7 @@ export const CONSUMER_CHALLENGE_DETAILS: Challenge_Details = {
 export const TESTNET_PROJECTS = [
   'QmduAur8aCENpuizuTGLAsXumG2BX8zSgWLsVpp5b8GEGN', // Staking Threshold - Polkadot
   'QmPZrgnpCrhU3bBXvNQG8qX3VBQTyNVj7agx1hiav14imM', // Developer Fund Votes - Juno
-  'QmWaCmiiNNSPKVuXGfwb7m67UuUeb39MjdNTSfz6K5A9S1', // Pangolin Approvals - Avalanche
+  'QmTXSopHWTDhei9ukMAJ1huy83jM9KnGsNEkBcpQkZUCVP', // Pangolin Rewards - Avalanche
 ];
 
 export const QUERY_REGISTRY_ADDRESS = testnetAddresses.QueryRegistry.address;
