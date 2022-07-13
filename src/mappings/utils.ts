@@ -3,7 +3,7 @@
 
 import { AcalaEvmEvent } from '@subql/acala-evm-processor';
 import bs58 from 'bs58';
-import { rolesConfig, RoleType } from './constants';
+import { rolesConfig, RoleType, SEASON_3_END } from './constants';
 
 export function bytesToIpfsCid(raw: string): string {
   // Add our default ipfs values for first 2 bytes:
@@ -21,10 +21,10 @@ async function updateChallenge(
   roleType: RoleType
 ) {
   //TODO: Add endblock height check when we know what SEASON_3_END is
-  // if (event.blockNumber >= SEASON_3_END) {
-  //   logger.info('season 3 has ended');
-  //   return;
-  // }
+  if (event.blockNumber >= SEASON_3_END) {
+    logger.info('Season 3 has ended');
+    return;
+  }
 
   const { name, entity, pts, details } = rolesConfig[roleType];
   let role = await entity.get(address);
