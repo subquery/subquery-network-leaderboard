@@ -12,7 +12,7 @@ interface Challenge_Details {
 }
 
 // TODO: add season3_end time (blockheight) average block time: 12.4s
-export const SEASON_3_END = 1575715;
+export const SEASON_3_END = 1583115;
 
 export const INDEXER_CHALLENGE_PTS: Challenge_Pts = {
   INDEX_SINGLE_PROJECT: 10,
