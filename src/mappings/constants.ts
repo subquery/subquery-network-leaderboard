@@ -11,7 +11,7 @@ interface Challenge_Details {
   [key: string]: string;
 }
 
-export const SEASON_3_END = 1658474803;
+export const SEASON_3_END = 1658474803000;
 
 export const INDEXER_CHALLENGE_PTS: Challenge_Pts = {
   INDEX_SINGLE_PROJECT: 10,

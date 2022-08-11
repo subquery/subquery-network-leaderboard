@@ -20,8 +20,6 @@ async function updateChallenge(
   event: AcalaEvmEvent,
   roleType: RoleType
 ) {
-  //TODO: Add endblock height check when we know what SEASON_3_END is
-  logger.info(`event timestamp: ${event.blockTimestamp.getTime()}`);
   if (event.blockTimestamp.getTime() >= SEASON_3_END) {
     logger.info('Season 3 has ended');
     return;
