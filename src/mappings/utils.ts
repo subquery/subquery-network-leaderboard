@@ -21,7 +21,8 @@ async function updateChallenge(
   roleType: RoleType
 ) {
   //TODO: Add endblock height check when we know what SEASON_3_END is
-  if (event.blockNumber >= SEASON_3_END) {
+  logger.info(`event timestamp: ${event.blockTimestamp.getTime()}`);
+  if (event.blockTimestamp.getTime() >= SEASON_3_END) {
     logger.info('Season 3 has ended');
     return;
   }
